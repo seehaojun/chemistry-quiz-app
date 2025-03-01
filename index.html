@@ -110,7 +110,8 @@
     async function handleRedirectCallback() {
       if (window.location.search.includes("code=") && window.location.search.includes("state=")) {
         await auth0Client.handleRedirectCallback();
-        window.history.replaceState({}, document.title, "/");
+        // Replace URL with the current pathname to stay in /chemistry-quiz-app/
+        window.history.replaceState({}, document.title, window.location.pathname);
       }
     }
 
@@ -190,7 +191,7 @@
     // Chat functionality using WebSocket (optional)
     let chatSocket;
     function initChat() {
-      const wsUrl = "wss://YOUR_WEBSOCKET_SERVER_URL"; // Replace with your WebSocket server URL if you have one
+      const wsUrl = "wss://YOUR_WEBSOCKET_SERVER_URL"; // Replace with your WebSocket server URL if available
       chatSocket = new WebSocket(wsUrl);
       chatSocket.onopen = () => console.log("Connected to chat server.");
       chatSocket.onmessage = event => {
@@ -219,7 +220,6 @@
     document.getElementById("submitAnswerBtn").addEventListener("click", submitAnswer);
     document.getElementById("sendChatBtn").addEventListener("click", sendChatMessage);
     document.getElementById("openAssistantBtn").addEventListener("click", () => {
-      // This opens ChatGPT in a new tab; you can replace this with a custom assistant widget if desired.
       window.open("https://chat.openai.com/", "_blank");
     });
 
@@ -228,7 +228,7 @@
       await handleRedirectCallback();
       await initAuth0();
       if (await auth0Client.isAuthenticated()) {
-        initChat(); // Optional: remove if you don't have a WebSocket server
+        initChat(); // Optional: remove if not using a WebSocket server
         generateQuestion();
       }
     };
