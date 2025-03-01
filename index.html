@@ -1,253 +1,237 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.4">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ed-Tech Chemistry Quiz</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .hidden { display: none; }
+    #quiz, #chat, #leaderboard, #assistant { margin-top: 20px; }
+    #chatLog { border: 1px solid #ccc; height: 200px; overflow-y: scroll; padding: 5px; }
+    table { width: 100%; border-collapse: collapse; }
+    table, th, td { border: 1px solid #ccc; }
+    th, td { padding: 8px; text-align: left; }
   </style>
+  <!-- Include Auth0 SPA JS library -->
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/1.19/auth0-spa-js.production.js"></script>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;Ed-Tech Chemistry Quiz&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>body { font-family: Arial, sans-serif; margin: 20px; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>.hidden { display: none; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>#quiz, #chat, #leaderboard, #assistant { margin-top: 20px; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>#chatLog { border: 1px solid #ccc; height: 200px; overflow-y: scroll; padding: 5px; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>table { width: 100%; border-collapse: collapse; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>table, th, td { border: 1px solid #ccc; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>th, td { padding: 8px; text-align: left; }</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- Include Auth0 SPA JS library --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://cdn.auth0.com/js/auth0-spa-js/1.19/auth0-spa-js.production.js"&gt;&lt;/script&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;h1&gt;Ed-Tech Chemistry Quiz&lt;/h1&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="login"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;button id="loginBtn"&gt;Login / Signup&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="app" class="hidden"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;p&gt;Welcome, &lt;span id="userName"&gt;&lt;/span&gt; from &lt;span id="userSchool"&gt;&lt;/span&gt;!&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Quiz Section --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="quiz"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;h2&gt;Quiz&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;p id="questionText"&gt;Press "New Question" to get started!&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;input type="text" id="answerInput" placeholder="Type your answer here"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;button id="submitAnswerBtn"&gt;Submit Answer&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;button id="newQuestionBtn"&gt;New Question&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;p id="feedback"&gt;&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;p&gt;Current Score: &lt;span id="currentScore"&gt;0&lt;/span&gt;&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;p&gt;Current Streak: &lt;span id="currentStreak"&gt;0&lt;/span&gt;&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Chat Section --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="chat"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;h2&gt;Chatroom&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;div id="chatLog"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;input type="text" id="chatInput" placeholder="Type a message"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;button id="sendChatBtn"&gt;Send&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Leaderboard Section --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="leaderboard"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;h2&gt;Leaderboard&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;table&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;thead&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;tr&gt;&lt;th&gt;Rank&lt;/th&gt;&lt;th&gt;User&lt;/th&gt;&lt;th&gt;School&lt;/th&gt;&lt;th&gt;Score&lt;/th&gt;&lt;/tr&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/thead&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;tbody id="leaderboardBody"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>&lt;!-- Leaderboard entries go here --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/tbody&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;/table&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- AI Assistant for Additional Questions --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="assistant"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;h2&gt;AI Assistant&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;button id="openAssistantBtn"&gt;Ask AI for a new question&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;!-- This button opens ChatGPT in a new tab; you can integrate a custom assistant widget if desired --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Global variables</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let auth0Client = null;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let userProfile = {};</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let currentScore = 0;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let currentStreak = 0;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let currentQuestion = {};</p>
-<p class="p1"><span class="Apple-converted-space">    </span>// For demo, a list of sample questions (in practice, these would be generated by AI)</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const sampleQuestions = [</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ question: "What is the atomic number of Oxygen?", answer: "8" },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ question: "What is the chemical formula of water?", answer: "H2O" },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ question: "What gas do plants absorb from the atmosphere?", answer: "CO2" },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ question: "What is the pH of pure water at 25°C?", answer: "7" }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>];</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Simulated leaderboard array (in practice, this could be fetched from your backend/Google Sheets)</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let leaderboard = [];</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Initialize Auth0</p>
-<p class="p1"><span class="Apple-converted-space">    </span>async function initAuth0() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>auth0Client = await createAuth0Client({</p>
-<p class="p1"><span class="Apple-converted-space">        </span>domain: "dev-mzawkrhazo4fjgnb.us.auth0.com",</p>
-<p class="p1"><span class="Apple-converted-space">        </span>client_id: "1XXSyu4uqn8FzRcxgF4vJQVWO5aTQuTv",</p>
-<p class="p1"><span class="Apple-converted-space">        </span>cacheLocation: 'localstorage',</p>
-<p class="p1"><span class="Apple-converted-space">        </span>useRefreshTokens: true</p>
-<p class="p1"><span class="Apple-converted-space">      </span>});</p>
-<p class="p2"><span class="Apple-converted-space">      </span></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// Check if the user is already logged in</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (await auth0Client.isAuthenticated()) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>userProfile = await auth0Client.getUser();</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("login").classList.add("hidden");</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("app").classList.remove("hidden");</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("userName").innerText = userProfile.nickname || userProfile.name;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("userSchool").innerText = userProfile['https://example.com/school'] || "Unknown School";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("loginBtn").addEventListener("click", login);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>async function login() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>await auth0Client.loginWithRedirect({</p>
-<p class="p1"><span class="Apple-converted-space">        </span>redirect_uri: window.location.href</p>
-<p class="p1"><span class="Apple-converted-space">      </span>});</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Handle Auth0 redirect callback</p>
-<p class="p1"><span class="Apple-converted-space">    </span>async function handleRedirectCallback() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (window.location.search.includes("code=") &amp;&amp; window.location.search.includes("state=")) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>await auth0Client.handleRedirectCallback();</p>
-<p class="p1"><span class="Apple-converted-space">        </span>window.history.replaceState({}, document.title, "/");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Generate a new quiz question (stubbed with sample questions for now)</p>
-<p class="p1"><span class="Apple-converted-space">    </span>function generateQuestion() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>currentQuestion = sampleQuestions[Math.floor(Math.random() * sampleQuestions.length)];</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("questionText").innerText = currentQuestion.question;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("feedback").innerText = "";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("answerInput").value = "";</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Handle answer submission</p>
-<p class="p1"><span class="Apple-converted-space">    </span>function submitAnswer() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const userAnswer = document.getElementById("answerInput").value.trim();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (userAnswer === "") {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>alert("Please enter an answer.");</p>
-<p class="p1"><span class="Apple-converted-space">        </span>return;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p1"><span class="Apple-converted-space">      </span>let multiplier = Math.min(1 + currentStreak, 3);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (userAnswer.toLowerCase() === currentQuestion.answer.toLowerCase()) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>currentStreak++;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const pointsEarned = 10 * multiplier;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>currentScore += pointsEarned;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("feedback").innerText = `Correct! +${pointsEarned} points.`;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>currentStreak = 0;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("feedback").innerText = `Incorrect. The correct answer was: ${currentQuestion.answer}.`;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("currentScore").innerText = currentScore;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById("currentStreak").innerText = currentStreak;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>updateLeaderboard(userProfile.nickname || userProfile.name, userProfile['https://example.com/school'] || "Unknown School", currentScore);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>// Save score to Google Sheets</p>
-<p class="p1"><span class="Apple-converted-space">      </span>saveScoreToGoogleSheets(userProfile, currentScore);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Update the simulated leaderboard (for demo purposes)</p>
-<p class="p1"><span class="Apple-converted-space">    </span>function updateLeaderboard(user, school, score) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const index = leaderboard.findIndex(entry =&gt; entry.user === user);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (index &gt; -1) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>leaderboard[index].score = score;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>leaderboard.push({ user, school, score });</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p1"><span class="Apple-converted-space">      </span>leaderboard.sort((a, b) =&gt; b.score - a.score);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>renderLeaderboard();</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function renderLeaderboard() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const tbody = document.getElementById("leaderboardBody");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>tbody.innerHTML = "";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>leaderboard.forEach((entry, index) =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const row = document.createElement("tr");</p>
-<p class="p1"><span class="Apple-converted-space">        </span>row.innerHTML = `&lt;td&gt;${index + 1}&lt;/td&gt;&lt;td&gt;${entry.user}&lt;/td&gt;&lt;td&gt;${entry.school}&lt;/td&gt;&lt;td&gt;${entry.score}&lt;/td&gt;`;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>tbody.appendChild(row);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>});</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Send score data to Google Sheets via a Google Apps Script web app endpoint</p>
-<p class="p1"><span class="Apple-converted-space">    </span>function saveScoreToGoogleSheets(user, score) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const scriptURL = "https://script.google.com/macros/s/AKfycbw9FgLxENNbVSvbCMfkVi32jsjiAgSWNQOD9A9ZeTr4BjhyTpOT8gacAlCBH3RDiRyl/exec";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const payload = {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>user: user.nickname || user.name,</p>
-<p class="p1"><span class="Apple-converted-space">        </span>school: user['https://example.com/school'] || "Unknown School",</p>
-<p class="p1"><span class="Apple-converted-space">        </span>score: score,</p>
-<p class="p1"><span class="Apple-converted-space">        </span>timestamp: new Date().toISOString()</p>
-<p class="p1"><span class="Apple-converted-space">      </span>};</p>
-<p class="p1"><span class="Apple-converted-space">      </span>fetch(scriptURL, {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>method: "POST",</p>
-<p class="p1"><span class="Apple-converted-space">        </span>mode: "no-cors",</p>
-<p class="p1"><span class="Apple-converted-space">        </span>headers: { "Content-Type": "application/json" },</p>
-<p class="p1"><span class="Apple-converted-space">        </span>body: JSON.stringify(payload)</p>
-<p class="p1"><span class="Apple-converted-space">      </span>})</p>
-<p class="p1"><span class="Apple-converted-space">      </span>.then(() =&gt; console.log("Score saved to Google Sheets"))</p>
-<p class="p1"><span class="Apple-converted-space">      </span>.catch(error =&gt; console.error("Error saving score: ", error));</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Chat functionality using WebSocket (optional)</p>
-<p class="p1"><span class="Apple-converted-space">    </span>let chatSocket;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>function initChat() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const wsUrl = "wss://YOUR_WEBSOCKET_SERVER_URL"; // Replace with your WebSocket server URL if you have one</p>
-<p class="p1"><span class="Apple-converted-space">      </span>chatSocket = new WebSocket(wsUrl);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>chatSocket.onopen = () =&gt; console.log("Connected to chat server.");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>chatSocket.onmessage = event =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const chatLog = document.getElementById("chatLog");</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const msgElem = document.createElement("p");</p>
-<p class="p1"><span class="Apple-converted-space">        </span>msgElem.innerText = event.data;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>chatLog.appendChild(msgElem);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>chatLog.scrollTop = chatLog.scrollHeight;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>};</p>
-<p class="p1"><span class="Apple-converted-space">      </span>chatSocket.onerror = error =&gt; console.error("Chat error: ", error);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function sendChatMessage() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>const message = document.getElementById("chatInput").value;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (message.trim() === "") return;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (chatSocket &amp;&amp; chatSocket.readyState === WebSocket.OPEN) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>chatSocket.send(`${userProfile.nickname || userProfile.name}: ${message}`);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById("chatInput").value = "";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>alert("Chat server is not connected.");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Event listeners</p>
-<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById("newQuestionBtn").addEventListener("click", generateQuestion);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById("submitAnswerBtn").addEventListener("click", submitAnswer);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById("sendChatBtn").addEventListener("click", sendChatMessage);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById("openAssistantBtn").addEventListener("click", () =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>// This opens ChatGPT in a new tab; you can replace this with a custom assistant widget if desired.</p>
-<p class="p1"><span class="Apple-converted-space">      </span>window.open("https://chat.openai.com/", "_blank");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Initialize app on page load</p>
-<p class="p1"><span class="Apple-converted-space">    </span>window.onload = async () =&gt; {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>await handleRedirectCallback();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>await initAuth0();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (await auth0Client.isAuthenticated()) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>initChat(); // Optional: remove if you don't have a WebSocket server</p>
-<p class="p1"><span class="Apple-converted-space">        </span>generateQuestion();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>};</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+  <h1>Ed-Tech Chemistry Quiz</h1>
+  <div id="login">
+    <button id="loginBtn">Login / Signup</button>
+  </div>
+  <div id="app" class="hidden">
+    <p>Welcome, <span id="userName"></span> from <span id="userSchool"></span>!</p>
+    <!-- Quiz Section -->
+    <div id="quiz">
+      <h2>Quiz</h2>
+      <p id="questionText">Press "New Question" to get started!</p>
+      <input type="text" id="answerInput" placeholder="Type your answer here">
+      <button id="submitAnswerBtn">Submit Answer</button>
+      <button id="newQuestionBtn">New Question</button>
+      <p id="feedback"></p>
+      <p>Current Score: <span id="currentScore">0</span></p>
+      <p>Current Streak: <span id="currentStreak">0</span></p>
+    </div>
+    <!-- Chat Section -->
+    <div id="chat">
+      <h2>Chatroom</h2>
+      <div id="chatLog"></div>
+      <input type="text" id="chatInput" placeholder="Type a message">
+      <button id="sendChatBtn">Send</button>
+    </div>
+    <!-- Leaderboard Section -->
+    <div id="leaderboard">
+      <h2>Leaderboard</h2>
+      <table>
+        <thead>
+          <tr><th>Rank</th><th>User</th><th>School</th><th>Score</th></tr>
+        </thead>
+        <tbody id="leaderboardBody">
+          <!-- Leaderboard entries go here -->
+        </tbody>
+      </table>
+    </div>
+    <!-- AI Assistant for Additional Questions -->
+    <div id="assistant">
+      <h2>AI Assistant</h2>
+      <button id="openAssistantBtn">Ask AI for a new question</button>
+      <!-- This button opens ChatGPT in a new tab; you can integrate a custom assistant widget if desired -->
+    </div>
+  </div>
+
+  <script>
+    // Global variables
+    let auth0Client = null;
+    let userProfile = {};
+    let currentScore = 0;
+    let currentStreak = 0;
+    let currentQuestion = {};
+    // For demo, a list of sample questions (in practice, these would be generated by AI)
+    const sampleQuestions = [
+      { question: "What is the atomic number of Oxygen?", answer: "8" },
+      { question: "What is the chemical formula of water?", answer: "H2O" },
+      { question: "What gas do plants absorb from the atmosphere?", answer: "CO2" },
+      { question: "What is the pH of pure water at 25°C?", answer: "7" }
+    ];
+
+    // Simulated leaderboard array (in practice, this could be fetched from your backend/Google Sheets)
+    let leaderboard = [];
+
+    // Initialize Auth0
+    async function initAuth0() {
+      auth0Client = await createAuth0Client({
+        domain: "dev-mzawkrhazo4fjgnb.us.auth0.com",
+        client_id: "1XXSyu4uqn8FzRcxgF4vJQVWO5aTQuTv",
+        cacheLocation: 'localstorage',
+        useRefreshTokens: true
+      });
+      
+      // Check if the user is already logged in
+      if (await auth0Client.isAuthenticated()) {
+        userProfile = await auth0Client.getUser();
+        document.getElementById("login").classList.add("hidden");
+        document.getElementById("app").classList.remove("hidden");
+        document.getElementById("userName").innerText = userProfile.nickname || userProfile.name;
+        document.getElementById("userSchool").innerText = userProfile['https://example.com/school'] || "Unknown School";
+      } else {
+        document.getElementById("loginBtn").addEventListener("click", login);
+      }
+    }
+
+    async function login() {
+      await auth0Client.loginWithRedirect({
+        redirect_uri: window.location.href
+      });
+    }
+
+    // Handle Auth0 redirect callback
+    async function handleRedirectCallback() {
+      if (window.location.search.includes("code=") && window.location.search.includes("state=")) {
+        await auth0Client.handleRedirectCallback();
+        window.history.replaceState({}, document.title, "/");
+      }
+    }
+
+    // Generate a new quiz question (stubbed with sample questions for now)
+    function generateQuestion() {
+      currentQuestion = sampleQuestions[Math.floor(Math.random() * sampleQuestions.length)];
+      document.getElementById("questionText").innerText = currentQuestion.question;
+      document.getElementById("feedback").innerText = "";
+      document.getElementById("answerInput").value = "";
+    }
+
+    // Handle answer submission
+    function submitAnswer() {
+      const userAnswer = document.getElementById("answerInput").value.trim();
+      if (userAnswer === "") {
+        alert("Please enter an answer.");
+        return;
+      }
+      let multiplier = Math.min(1 + currentStreak, 3);
+      if (userAnswer.toLowerCase() === currentQuestion.answer.toLowerCase()) {
+        currentStreak++;
+        const pointsEarned = 10 * multiplier;
+        currentScore += pointsEarned;
+        document.getElementById("feedback").innerText = `Correct! +${pointsEarned} points.`;
+      } else {
+        currentStreak = 0;
+        document.getElementById("feedback").innerText = `Incorrect. The correct answer was: ${currentQuestion.answer}.`;
+      }
+      document.getElementById("currentScore").innerText = currentScore;
+      document.getElementById("currentStreak").innerText = currentStreak;
+      updateLeaderboard(userProfile.nickname || userProfile.name, userProfile['https://example.com/school'] || "Unknown School", currentScore);
+      // Save score to Google Sheets
+      saveScoreToGoogleSheets(userProfile, currentScore);
+    }
+
+    // Update the simulated leaderboard (for demo purposes)
+    function updateLeaderboard(user, school, score) {
+      const index = leaderboard.findIndex(entry => entry.user === user);
+      if (index > -1) {
+        leaderboard[index].score = score;
+      } else {
+        leaderboard.push({ user, school, score });
+      }
+      leaderboard.sort((a, b) => b.score - a.score);
+      renderLeaderboard();
+    }
+
+    function renderLeaderboard() {
+      const tbody = document.getElementById("leaderboardBody");
+      tbody.innerHTML = "";
+      leaderboard.forEach((entry, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${index + 1}</td><td>${entry.user}</td><td>${entry.school}</td><td>${entry.score}</td>`;
+        tbody.appendChild(row);
+      });
+    }
+
+    // Send score data to Google Sheets via a Google Apps Script web app endpoint
+    function saveScoreToGoogleSheets(user, score) {
+      const scriptURL = "https://script.google.com/macros/s/AKfycbw9FgLxENNbVSvbCMfkVi32jsjiAgSWNQOD9A9ZeTr4BjhyTpOT8gacAlCBH3RDiRyl/exec";
+      const payload = {
+        user: user.nickname || user.name,
+        school: user['https://example.com/school'] || "Unknown School",
+        score: score,
+        timestamp: new Date().toISOString()
+      };
+      fetch(scriptURL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+      .then(() => console.log("Score saved to Google Sheets"))
+      .catch(error => console.error("Error saving score: ", error));
+    }
+
+    // Chat functionality using WebSocket (optional)
+    let chatSocket;
+    function initChat() {
+      const wsUrl = "wss://YOUR_WEBSOCKET_SERVER_URL"; // Replace with your WebSocket server URL if you have one
+      chatSocket = new WebSocket(wsUrl);
+      chatSocket.onopen = () => console.log("Connected to chat server.");
+      chatSocket.onmessage = event => {
+        const chatLog = document.getElementById("chatLog");
+        const msgElem = document.createElement("p");
+        msgElem.innerText = event.data;
+        chatLog.appendChild(msgElem);
+        chatLog.scrollTop = chatLog.scrollHeight;
+      };
+      chatSocket.onerror = error => console.error("Chat error: ", error);
+    }
+
+    function sendChatMessage() {
+      const message = document.getElementById("chatInput").value;
+      if (message.trim() === "") return;
+      if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+        chatSocket.send(`${userProfile.nickname || userProfile.name}: ${message}`);
+        document.getElementById("chatInput").value = "";
+      } else {
+        alert("Chat server is not connected.");
+      }
+    }
+
+    // Event listeners
+    document.getElementById("newQuestionBtn").addEventListener("click", generateQuestion);
+    document.getElementById("submitAnswerBtn").addEventListener("click", submitAnswer);
+    document.getElementById("sendChatBtn").addEventListener("click", sendChatMessage);
+    document.getElementById("openAssistantBtn").addEventListener("click", () => {
+      // This opens ChatGPT in a new tab; you can replace this with a custom assistant widget if desired.
+      window.open("https://chat.openai.com/", "_blank");
+    });
+
+    // Initialize app on page load
+    window.onload = async () => {
+      await handleRedirectCallback();
+      await initAuth0();
+      if (await auth0Client.isAuthenticated()) {
+        initChat(); // Optional: remove if you don't have a WebSocket server
+        generateQuestion();
+      }
+    };
+  </script>
 </body>
 </html>
